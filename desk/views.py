@@ -24,7 +24,11 @@ def ticket_list(request):
     tickets=visible_tickets(request.user).order_by('-created_at')
     status=request.GET.get('status','')
     if status in dict(Ticket.STATUS):tickets=tickets.filter(status=status)
-    query=request.GET.get('q','').strip()[:120]\n    priority=request.GET.get('priority','')\n    if query:tickets=tickets.filter(Q(title__icontains=query)|Q(description__icontains=query)|Q(category__icontains=query))\n    if priority in dict(Ticket.PRIORITY):tickets=tickets.filter(priority=priority)\n    return render(request,'desk/tickets.html',{'tickets':tickets,'selected_status':status,'statuses':Ticket.STATUS,'selected_priority':priority,'priorities':Ticket.PRIORITY,'query':query})
+    query=request.GET.get('q','').strip()[:120]
+    priority=request.GET.get('priority','')
+    if query:tickets=tickets.filter(Q(title__icontains=query)|Q(description__icontains=query)|Q(category__icontains=query))
+    if priority in dict(Ticket.PRIORITY):tickets=tickets.filter(priority=priority)
+    return render(request,'desk/tickets.html',{'tickets':tickets,'selected_status':status,'statuses':Ticket.STATUS,'selected_priority':priority,'priorities':Ticket.PRIORITY,'query':query})
 
 @login_required
 def ticket_create(request):
