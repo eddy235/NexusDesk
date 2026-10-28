@@ -85,3 +85,43 @@ class AccessTests(TestCase):
             result=self.client.post(reverse('ticket_detail',args=[self.ticket.pk]),{'action':'comment','body':body})
             self.assertEqual(result.status_code,200)
         self.assertFalse(TicketComment.objects.exists())
+
+    def test_employee_cannot_edit_asset(self):
+        self.client.force_login(self.other)
+        response=self.client.post(reverse('asset_update',args=[self.asset.pk]),{
+            'name':'Changed','asset_tag':'LAP-001','asset_type':'laptop',
+            'status':'retired'})
+        self.assertEqual(response.status_code,302)
+        self.asset.refresh_from_db()
+        self.assertEqual(self.asset.status,'available')
+
+    def test_staff_asset_update_tracks_history(self):
+        self.client.force_login(self.tech)
+        response=self.client.post(reverse('asset_update',args=[self.asset.pk]),{
+            'name':'Staff laptop','asset_tag':'LAP-001','asset_type':'laptop',
+            'status':'maintenance','serial_number':'','location':'Service desk',
+            'assigned_to':'','notes':''})
+        self.assertEqual(response.status_code,302)
+        self.asset.refresh_from_db()
+        self.assertEqual(self.asset.status,'maintenance')
+        self.assertTrue(self.asset.history.filter(actor=self.tech,event__icontains='status').exists())
+
+    def test_staff_asset_no_change_does_not_write_event(self):
+        self.client.force_login(self.tech)
+        response=self.client.post(reverse('asset_update',args=[self.asset.pk]),{
+            'name':'Staff laptop','asset_tag':'LAP-001','asset_type':'laptop',
+            'status':'available','serial_number':'','location':'',
+            'assigned_to':self.other.pk,'notes':''})
+        self.assertEqual(response.status_code,302)
+        self.assertEqual(self.asset.history.count(),0)
+
+    def test_due_soon_includes_only_active_ticket(self):
+        self.ticket.due_at=timezone.now()+timedelta(hours=12)
+        self.ticket.save()
+        self.client.force_login(self.tech)
+        response=self.client.get(reverse('dashboard'))
+        self.assertEqual(response.context['due_soon'],1)
+        self.ticket.status='resolved'
+        self.ticket.save()
+        response=self.client.get(reverse('dashboard'))
+        self.assertEqual(response.context['due_soon'],0)
