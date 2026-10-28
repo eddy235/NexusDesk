@@ -15,6 +15,7 @@ class Ticket(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
     due_at=models.DateTimeField(null=True,blank=True)
+    sla_escalated_at=models.DateTimeField(null=True,blank=True)
     @property
     def overdue(self):
         return self.due_at is not None and self.status not in ('resolved','closed') and self.due_at < timezone.now()
@@ -62,3 +63,20 @@ class AssetEvent(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     class Meta:
         ordering=['-created_at','-id']
+
+class SLAPolicy(models.Model):
+    priority=models.CharField(max_length=12,choices=Ticket.PRIORITY,unique=True)
+    resolution_hours=models.PositiveSmallIntegerField()
+    open_hour=models.PositiveSmallIntegerField(default=9)
+    close_hour=models.PositiveSmallIntegerField(default=17)
+    enabled=models.BooleanField(default=True)
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.resolution_hours is not None and not 1 <= self.resolution_hours <= 720:
+            raise ValidationError({'resolution_hours':'Choose 1 to 720 business hours.'})
+        if self.open_hour is not None and self.close_hour is not None and not (0 <= self.open_hour < self.close_hour <= 24):
+            raise ValidationError('Opening hour must precede closing hour.')
+
+    def __str__(self):
+        return f'{self.get_priority_display()} SLA'
