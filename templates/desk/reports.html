@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Operations reports · NexusDesk{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">Technician workspace</div>
+    <h1>Operations reports</h1>
+    <p>Get a clear picture of ticket workload, service deadlines and equipment status.</p>
+  </div>
+  <a class="btn btn-secondary" href="{% url 'reports_export' %}?period={{ period }}">Export ticket CSV ↓</a>
+</section>
+<form method="get" class="report-toolbar" aria-label="Choose reporting period">
+  <div class="filter-field"><label for="report-period">Ticket creation period</label>
+    <select id="report-period" name="period">
+      {% for value,label in periods %}<option value="{{ value }}" {% if period == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+  </div>
+  <button class="btn" type="submit">Apply period</button>
+</form>
+<section class="metrics" aria-label="Ticket workload summary">
+  <article><div class="metric-heading"><small>Tickets created</small><span class="metric-symbol blue" aria-hidden="true">☰</span></div><strong>{{ ticket_count }}</strong><p>In selected creation period</p></article>
+  <article><div class="metric-heading"><small>Still active</small><span class="metric-symbol" aria-hidden="true">↗</span></div><strong>{{ active_count }}</strong><p>Open or in progress</p></article>
+  <article><div class="metric-heading"><small>Resolved / closed</small><span class="metric-symbol" aria-hidden="true">✓</span></div><strong>{{ completed_count }}</strong><p>Current ticket state</p></article>
+  <article><div class="metric-heading"><small>Overdue</small><span class="metric-symbol red" aria-hidden="true">!</span></div><strong{% if overdue_count %} class="warn"{% endif %}>{{ overdue_count }}</strong><p>Active past deadline</p></article>
+</section>
+<section class="metrics metrics-secondary" aria-label="Service attention indicators">
+  <article><div class="metric-heading"><small>Unassigned active</small><span class="metric-symbol amber" aria-hidden="true">◎</span></div><strong class="metric-secondary-value">{{ unassigned_count }}</strong><p>Awaiting a technician</p></article>
+  <article><div class="metric-heading"><small>Escalated active</small><span class="metric-symbol red" aria-hidden="true">↥</span></div><strong class="metric-secondary-value">{{ escalated_count }}</strong><p>Logged SLA breaches</p></article>
+  <article><div class="metric-heading"><small>Total assets</small><span class="metric-symbol blue" aria-hidden="true">▤</span></div><strong class="metric-secondary-value">{{ asset_total }}</strong><p>All current inventory</p></article>
+</section>
+<div class="report-grid">
+  <section class="panel" aria-labelledby="status-heading">
+    <div class="heading"><div><div class="eyebrow">Workload</div><h2 id="status-heading">Tickets by status</h2></div></div>
+    <div class="report-bars">
+      {% for item in statuses %}<div class="report-breakdown">
+        <div class="report-breakdown-label"><span class="status-pill status-{{ item.value }}">{{ item.label }}</span><strong>{{ item.count }}</strong></div>
+        <progress aria-label="{{ item.label }} tickets" value="{{ item.count }}" max="{{ chart_max }}">{{ item.count }}</progress>
+      </div>{% endfor %}
+    </div>
+  </section>
+  <section class="panel" aria-labelledby="priority-heading">
+    <div class="heading"><div><div class="eyebrow">Urgency</div><h2 id="priority-heading">Tickets by priority</h2></div></div>
+    <div class="report-bars">
+      {% for item in priorities %}<div class="report-breakdown">
+        <div class="report-breakdown-label"><span class="status-pill status-{{ item.value }}">{{ item.label }}</span><strong>{{ item.count }}</strong></div>
+        <progress aria-label="{{ item.label }} priority" value="{{ item.count }}" max="{{ chart_max }}">{{ item.count }}</progress>
+      </div>{% endfor %}
+    </div>
+  </section>
+  <section class="panel" aria-labelledby="category-heading">
+    <div class="heading"><div><div class="eyebrow">Common requests</div><h2 id="category-heading">Top ticket categories</h2></div></div>
+    {% if categories %}
+    <div class="table-wrap"><table><thead><tr><th scope="col">Category</th><th scope="col">Tickets</th></tr></thead><tbody>
+      {% for item in categories %}<tr><td>{{ item.category|default:"Uncategorized" }}</td><td><strong>{{ item.count }}</strong></td></tr>{% endfor %}
+    </tbody></table></div>
+    {% else %}<p class="page-intro">No tickets in the selected period.</p>{% endif %}
+  </section>
+  <section class="panel" aria-labelledby="asset-state-heading">
+    <div class="heading"><div><div class="eyebrow">Equipment</div><h2 id="asset-state-heading">Asset lifecycle</h2></div></div>
+    <div class="table-wrap"><table><thead><tr><th scope="col">State</th><th scope="col">Assets</th></tr></thead><tbody>
+      {% for item in asset_states %}<tr><td><span class="status-pill status-{{ item.value }}">{{ item.label }}</span></td><td><strong>{{ item.count }}</strong></td></tr>{% endfor %}
+    </tbody></table></div>
+  </section>
+</div>
+<p class="report-footnote">Ticket counts reflect each record's <strong>current status</strong>, filtered by creation date—not historical resolution speed. Asset counts cover the entire current inventory, regardless of ticket period. Reports are restricted to IT staff.</p>
+{% endblock %}
