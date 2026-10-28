@@ -1,4 +1,4 @@
-# NexusDesk — IT Management Platform (v0.5)
+# NexusDesk — IT Management Platform (v0.6)
 
 A local-first IT service desk and asset inventory application. Built using **Python, Django, SQLite, HTML/CSS**, with built-in login sessions and CSRF protection. Intended as an evolving full-stack portfolio project, not a publicly hosted multi-tenant SaaS service.
 
@@ -32,8 +32,8 @@ Run tests: `python manage.py test`
 - Employees only see tickets they report or have been assigned, and assets assigned to them. Staff can manage all tickets/assets.
 - Standard Django CSRF protection and authentication. Audit trail currently captures ticket creation and ticket updates, **not every action**.
 - This starter uses SQLite for development, not a production-ready shared database.
-- SLA management is currently a simple deadline/overdue indicator rather than a full SLA policy engine.
-- No public demo, email integration, attachments or API are included yet.
+- Priority-based business-hour SLA deadlines and audit-only breach escalation are available; automatic notifications are not.
+- A separate, synthetic, read-only demo exists; email integration, attachments and a public write API are not included.
 
 ## Suggested iterations
 - **v0.2:** Ticket comments, search and priorities, service category definitions.
@@ -92,3 +92,31 @@ python manage.py runserver
 ```
 
 After connecting a demo deployment, verify `/health/`, verify `/demo/` renders synthetic examples, and check that `/login/`, `/admin/`, `/tickets/` and POST requests do not expose write access. No claim of independent penetration testing or production certification is implied.
+
+
+## v0.6 — Interactive read-only portfolio demonstration
+
+The synthetic preview at `/demo/` now allows users to **search and filter fictional tickets** by ID/title/team, status and priority, and **filter fictional assets** by lifecycle state. Summary counts are derived from the complete fixed example dataset, independent of filters. No internal Ticket, Asset, or User records are read or created. GET query parameters are bounded and constrained to known values.
+
+The public demo's allowlist blocks login, admin, real ticket/asset routes and all write methods; its responses include a restrictive Content Security Policy and anti-framing rules. This is a limited portfolio demonstration and **not evidence of a formal penetration test**.
+
+### Render deployment checklist
+
+The `render.yaml` Blueprint exists, but connecting it to a Render account and deploying is a **separate user-authorized step**. On Render, create a Blueprint from this repository, confirm the configured service has `NEXUSDESK_DEMO_MODE=true`, `DJANGO_DEBUG=false`, an automatically generated `DJANGO_SECRET_KEY` and HTTPS. Never set `NEXUSDESK_DEMO_MODE=false` on the public example service; do not load real user or asset data.
+
+After it deploys, verify `/demo/` and `/health/` are accessible, filtering works, and `/login/`, `/admin/`, `/tickets/` return 404. POST requests must also be rejected. Render Free may sleep when inactive; no public uptime guarantee is implied.
+
+### Local use after updating
+
+On Windows PowerShell, within the extracted repository, activate your virtual environment (or use `.venv\Scripts\python.exe` directly), then install updated requirements:
+
+```powershell
+python -m pip install -r requirements.txt
+$env:DJANGO_DEBUG = 'true'
+$env:NEXUSDESK_DEMO_MODE = 'false'
+python manage.py migrate
+python manage.py test
+python manage.py runserver 127.0.0.1:8000
+```
+
+This leaves your local authenticated helpdesk intact. The live Render demo, if deployed, uses fictional data only.
