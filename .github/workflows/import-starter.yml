@@ -1,0 +1,39 @@
+name: Import NexusDesk starter
+on:
+  push:
+    paths:
+      - .github/workflows/import-starter.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Extract the uploaded source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f NexusDesk_v0.1_GitHub_Starter.zip
+          mkdir -p /tmp/nexusdesk-import
+          unzip -q NexusDesk_v0.1_GitHub_Starter.zip -d /tmp/nexusdesk-import
+          test -f /tmp/nexusdesk-import/NexusDesk/manage.py
+          cp -a /tmp/nexusdesk-import/NexusDesk/. .
+          rm NexusDesk_v0.1_GitHub_Starter.zip
+          test -f manage.py
+          test -f requirements.txt
+          test -f README.md
+      - name: Commit extracted Django project
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m 'Import extracted NexusDesk v0.1 Django starter'
+            git push origin HEAD:main
+          fi
