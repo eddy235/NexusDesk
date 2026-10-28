@@ -58,9 +58,9 @@ def ticket_detail(request,pk):
                 messages.success(request,'Comment added.')
                 return redirect('ticket_detail',pk=pk)
         elif action=='update' and request.user.is_staff:
+            old=(ticket.status,ticket.assigned_to_id,ticket.due_at)
             form=TicketUpdateForm(request.POST,instance=ticket)
             if form.is_valid():
-                old=(ticket.status,ticket.assigned_to_id,ticket.due_at)
                 changed=form.save()
                 if old!=(changed.status,changed.assigned_to_id,changed.due_at):
                     TicketEvent.objects.create(ticket=changed,actor=request.user,event='Assignment, status or deadline updated')
