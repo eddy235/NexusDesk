@@ -1,4 +1,4 @@
-# NexusDesk — IT Management Platform (v0.6)
+# NexusDesk — IT Management Platform (v0.7)
 
 A local-first IT service desk and asset inventory application. Built using **Python, Django, SQLite, HTML/CSS**, with built-in login sessions and CSRF protection. Intended as an evolving full-stack portfolio project, not a publicly hosted multi-tenant SaaS service.
 
@@ -120,3 +120,25 @@ python manage.py runserver 127.0.0.1:8000
 ```
 
 This leaves your local authenticated helpdesk intact. The live Render demo, if deployed, uses fictional data only.
+
+
+## v0.7 — Deployment verification & portfolio presentation
+
+The existing Render Blueprint now configures `/health/` as an HTTP health
+check and opts into HSTS for HTTPS-only demo deployments. A dependency-free
+verification script checks the deployed **synthetic** dashboard, live static
+files, restrictive demo headers and forbidden private/write endpoints.
+
+- Deployment guide: [DEPLOYMENT.md](DEPLOYMENT.md)
+- Portfolio-ready project description: [PORTFOLIO_CASE_STUDY.md](PORTFOLIO_CASE_STUDY.md)
+
+After the Render service exists, run the following command from the repository
+root with its **actual** public origin:
+
+```bash
+python scripts/verify_demo_http.py https://YOUR-VERIFIED-SERVICE.onrender.com
+```
+
+The Blueprint itself does not launch a service until it is applied in a Render
+account. **Do not link to an unverified demo URL**. Internal/private operational
+data and admin routes must never be enabled on the public synthetic demo.
