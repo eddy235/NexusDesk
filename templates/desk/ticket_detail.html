@@ -2,7 +2,7 @@
 {% block title %}Ticket #{{ ticket.pk }} · NexusDesk{% endblock %}
 {% block content %}
 <a class="text-link" href="{% url 'ticket_list' %}">← All tickets</a>
-<div class="heading" style="margin-top:19px">
+<div class="heading ticket-detail-heading">
   <div><div class="eyebrow">Support / Ticket #{{ ticket.pk }}</div><h1>{{ ticket.title }}</h1><p class="page-intro">Created {{ ticket.created_at|date:"M j, Y" }} by {{ ticket.reporter.username }}</p></div>
   <span class="status-pill status-{{ ticket.status }}">{{ ticket.get_status_display }}</span>
 </div>
