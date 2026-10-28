@@ -211,3 +211,5 @@ footer{margin-top:40px;padding:24px 0 0;border-top:1px solid var(--border);font-
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
 @media(prefers-contrast:more){:root{--border:#a4b2bc;--muted:#455563}.tag{border-color:#879da7}}
+
+.ticket-detail-heading{margin-top:19px}
