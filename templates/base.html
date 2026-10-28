@@ -24,7 +24,7 @@
       <p class="nav-label nav-label-secondary">Manage</p>
       <nav class="primary-nav" aria-label="Administration"><a href="{% url 'reports' %}" {% if request.resolver_match.url_name == 'reports' or request.resolver_match.url_name == 'reports_export' %}class="active" aria-current="page"{% endif %}><span class="nav-icon" aria-hidden="true">▥</span> Reports</a><a href="{% url 'admin:index' %}"><span class="nav-icon" aria-hidden="true">⚙</span> Administration</a></nav>
       {% endif %}
-      <div class="side-bottom"><span class="side-indicator" aria-hidden="true"></span><div><strong>Service workspace</strong><small>v0.9 · Operational tools</small></div></div>
+      <div class="side-bottom"><span class="side-indicator" aria-hidden="true"></span><div><strong>Service workspace</strong><small>v1.0 · Operational tools</small></div></div>
     </aside>
     {% else %}
     <header class="auth-header"><a class="brand" href="{% url 'login' %}"><span class="brand-mark" aria-hidden="true">N</span><span>Nexus<span class="brand-accent">Desk</span></span></a><span class="auth-header-note">Internal IT management</span></header>
@@ -39,7 +39,7 @@
       <main id="content" class="shell" tabindex="-1">
         {% for message in messages %}<p class="notice" role="status">{{ message }}</p>{% endfor %}
         {% block content %}{% endblock %}
-        {% if user.is_authenticated %}<footer>NexusDesk · IT service management · v0.9</footer>{% endif %}
+        {% if user.is_authenticated %}<footer>NexusDesk · IT service management · v1.0</footer>{% endif %}
       </main>
     </div>
   </div>
