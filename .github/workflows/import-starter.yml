@@ -1,40 +1,31 @@
-name: Import NexusDesk starter
+name: NexusDesk Django tests
 on:
   push:
-    paths:
-      - .github/workflows/import-starter.yml
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
+
 permissions:
-  contents: write
+  contents: read
+
 jobs:
-  import:
+  django-tests:
     runs-on: ubuntu-latest
+    env:
+      DJANGO_DEBUG: "true"
+      DJANGO_SECRET_KEY: "ci-only-not-for-production-strong-test-secret"
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          persist-credentials: true
-      - name: Extract the uploaded source archive
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f NexusDesk_v0.1_GitHub_Starter.zip
-          mkdir -p /tmp/nexusdesk-import
-          unzip -q NexusDesk_v0.1_GitHub_Starter.zip -d /tmp/nexusdesk-import
-          test -f /tmp/nexusdesk-import/NexusDesk/manage.py
-          cp -a /tmp/nexusdesk-import/NexusDesk/. .
-          rm -f .github/workflows/tests.yml
-          rm NexusDesk_v0.1_GitHub_Starter.zip
-          test -f manage.py
-          test -f requirements.txt
-          test -f README.md
-      - name: Commit extracted Django project
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          if ! git diff --cached --quiet; then
-            git commit -m 'Import extracted NexusDesk v0.1 Django starter'
-            git push origin HEAD:main
-          fi
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Check migrations
+        run: python manage.py makemigrations --check --dry-run
+      - name: Django system checks
+        run: python manage.py check
+      - name: Run tests
+        run: python manage.py test --verbosity 2
