@@ -13,7 +13,7 @@ class TicketUpdateForm(forms.ModelForm):
 class AssetForm(forms.ModelForm):
     class Meta:
         model=Asset
-        fields=['name','asset_tag','asset_type','serial_number','location','assigned_to','notes']
+        fields=['name','asset_tag','asset_type','status','serial_number','location','assigned_to','notes']
 
 class TicketCommentForm(forms.ModelForm):
     class Meta:

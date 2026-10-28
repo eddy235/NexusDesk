@@ -1,4 +1,4 @@
-# NexusDesk — IT Management Platform (v0.1)
+# NexusDesk — IT Management Platform (v0.3)
 
 A local-first IT service desk and asset inventory application. Built using **Python, Django, SQLite, HTML/CSS**, with built-in login sessions and CSRF protection. Intended as an evolving full-stack portfolio project, not a publicly hosted multi-tenant SaaS service.
 
@@ -56,3 +56,10 @@ NexusDesk is an IT operations dashboard supporting service requests, IT asset tr
 After pulling this release, run `python manage.py migrate` to create the comment table, then `python manage.py test`.
 
 **Security note:** NexusDesk is currently intended for local/internal development, not a public deployment with real employee records. Do not publish a production instance without a deployment, permissions and data-protection review.
+
+
+## v0.3 — Asset lifecycle and SLA monitoring
+
+Asset inventory includes lifecycle states (Available, Assigned, Maintenance, Retired). Staff can edit assets and changes are logged as timestamped asset events with the actor and changed field names. Regular employees retain access only to assets assigned to them, and cannot modify inventory. The dashboard highlights active tickets overdue or due within the next 24 hours. These indicators are **calendar-hour deadline checks**, not a configurable business-hours SLA engine; notifications and escalations are out of scope.
+
+Run `python manage.py migrate` after updating, then `python manage.py test`. This is still a local/internal prototype, not a production-hosted system.

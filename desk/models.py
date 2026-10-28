@@ -23,6 +23,8 @@ class Ticket(models.Model):
 
 class Asset(models.Model):
     TYPE=[('laptop','Laptop'),('desktop','Desktop'),('printer','Printer'),('network','Network'),('other','Other')]
+    STATE=[('available','Available'),('assigned','Assigned'),('maintenance','Maintenance'),('retired','Retired')]
+    status=models.CharField(max_length=16,choices=STATE,default='available')
     name=models.CharField(max_length=120)
     asset_tag=models.CharField(max_length=70,unique=True)
     asset_type=models.CharField(max_length=20,choices=TYPE,default='laptop')
@@ -52,3 +54,11 @@ class TicketComment(models.Model):
 
     def __str__(self):
         return f'Comment #{self.pk} on ticket #{self.ticket_id}'
+
+class AssetEvent(models.Model):
+    asset=models.ForeignKey(Asset,on_delete=models.CASCADE,related_name='history')
+    actor=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL,null=True)
+    event=models.CharField(max_length=240)
+    created_at=models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering=['-created_at','-id']
