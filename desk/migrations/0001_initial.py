@@ -1,0 +1,13 @@
+# Initial migration for NexusDesk
+from django.conf import settings
+from django.db import migrations, models
+import django.db.models.deletion
+
+class Migration(migrations.Migration):
+    initial=True
+    dependencies=[migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
+    operations=[
+        migrations.CreateModel(name='Ticket',fields=[('id',models.BigAutoField(auto_created=True,primary_key=True,serialize=False,verbose_name='ID')),('title',models.CharField(max_length=180)),('description',models.TextField(max_length=4000)),('category',models.CharField(default='General',max_length=90)),('priority',models.CharField(choices=[('low','Low'),('medium','Medium'),('high','High'),('critical','Critical')],default='medium',max_length=12)),('status',models.CharField(choices=[('open','Open'),('in_progress','In progress'),('resolved','Resolved'),('closed','Closed')],default='open',max_length=14)),('created_at',models.DateTimeField(auto_now_add=True)),('updated_at',models.DateTimeField(auto_now=True)),('due_at',models.DateTimeField(blank=True,null=True)),('assigned_to',models.ForeignKey(blank=True,null=True,on_delete=django.db.models.deletion.SET_NULL,related_name='assigned_tickets',to=settings.AUTH_USER_MODEL)),('reporter',models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,related_name='reported_tickets',to=settings.AUTH_USER_MODEL))]),
+        migrations.CreateModel(name='Asset',fields=[('id',models.BigAutoField(auto_created=True,primary_key=True,serialize=False,verbose_name='ID')),('name',models.CharField(max_length=120)),('asset_tag',models.CharField(max_length=70,unique=True)),('asset_type',models.CharField(choices=[('laptop','Laptop'),('desktop','Desktop'),('printer','Printer'),('network','Network'),('other','Other')],default='laptop',max_length=20)),('serial_number',models.CharField(blank=True,max_length=100)),('location',models.CharField(blank=True,max_length=120)),('notes',models.TextField(blank=True,max_length=2000)),('created_at',models.DateTimeField(auto_now_add=True)),('assigned_to',models.ForeignKey(blank=True,null=True,on_delete=django.db.models.deletion.SET_NULL,to=settings.AUTH_USER_MODEL))]),
+        migrations.CreateModel(name='TicketEvent',fields=[('id',models.BigAutoField(auto_created=True,primary_key=True,serialize=False,verbose_name='ID')),('event',models.CharField(max_length=200)),('created_at',models.DateTimeField(auto_now_add=True)),('actor',models.ForeignKey(null=True,on_delete=django.db.models.deletion.SET_NULL,to=settings.AUTH_USER_MODEL)),('ticket',models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,related_name='events',to='desk.ticket'))],options={'ordering':['-created_at']}),
+    ]
