@@ -23,6 +23,10 @@ A **separate, synthetic read-only demo** presents sample ticket search, filters,
 dashboard metrics and equipment states. The demo deliberately does not use the
 production/internal database, and blocks authentication, admin and write routes.
 
+## Interface design
+
+NexusDesk uses a distinct modern light SaaS identity: warm off-white canvas, white surfaces, slate text and restrained teal actions. The simplified dashboard, clear status pills and mobile-friendly navigation intentionally differ from the darker SecureScan cybersecurity project. See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for tokens and UI principles.
+
 ## Technical stack
 
 - Backend: Python, Django, Django ORM
