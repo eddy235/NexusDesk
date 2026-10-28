@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404,redirect,render
 from django.utils import timezone
 from .models import Ticket,Asset,TicketEvent,TicketComment,AssetEvent
 from .forms import TicketForm,TicketUpdateForm,AssetForm,TicketCommentForm
+from .sla import apply_sla
 
 def is_staff(user):return user.is_authenticated and user.is_staff
 
@@ -18,8 +19,9 @@ def dashboard(request):
     counts={key:tickets.filter(status=key).count() for key,_ in Ticket.STATUS}
     active=tickets.exclude(status__in=['resolved','closed'])
     overdue=active.filter(due_at__lt=timezone.now()).count()
+    escalated=active.filter(sla_escalated_at__isnull=False).count()
     due_soon=active.filter(due_at__gte=timezone.now(),due_at__lte=timezone.now()+timezone.timedelta(hours=24)).count()
-    return render(request,'desk/dashboard.html',{'counts':counts,'overdue':overdue,'due_soon':due_soon,'recent':tickets.order_by('-created_at')[:6],'unassigned':tickets.filter(assigned_to__isnull=True).exclude(status__in=['resolved','closed']).count(),'assets_count':Asset.objects.count() if request.user.is_staff else Asset.objects.filter(assigned_to=request.user).count()})
+    return render(request,'desk/dashboard.html',{'counts':counts,'overdue':overdue,'escalated':escalated,'due_soon':due_soon,'recent':tickets.order_by('-created_at')[:6],'unassigned':tickets.filter(assigned_to__isnull=True).exclude(status__in=['resolved','closed']).count(),'assets_count':Asset.objects.count() if request.user.is_staff else Asset.objects.filter(assigned_to=request.user).count()})
 
 @login_required
 def ticket_list(request):
@@ -37,6 +39,7 @@ def ticket_create(request):
     form=TicketForm(request.POST or None)
     if request.method=='POST' and form.is_valid():
         ticket=form.save(commit=False);ticket.reporter=request.user;ticket.save()
+        apply_sla(ticket)
         TicketEvent.objects.create(ticket=ticket,actor=request.user,event='Ticket created')
         messages.success(request,'Ticket submitted successfully.')
         return redirect('ticket_detail',pk=ticket.pk)
@@ -64,6 +67,9 @@ def ticket_detail(request,pk):
             form=TicketUpdateForm(request.POST,instance=ticket)
             if form.is_valid():
                 changed=form.save()
+                if old[2] != changed.due_at and changed.sla_escalated_at:
+                    changed.sla_escalated_at=None
+                    changed.save(update_fields=['sla_escalated_at'])
                 if old!=(changed.status,changed.assigned_to_id,changed.due_at):
                     TicketEvent.objects.create(ticket=changed,actor=request.user,event='Assignment, status or deadline updated')
                 messages.success(request,'Ticket updated.')

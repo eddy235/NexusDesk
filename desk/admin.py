@@ -13,3 +13,10 @@ class AssetAdmin(admin.ModelAdmin):
 class TicketEventAdmin(admin.ModelAdmin):
     list_display=['ticket','actor','event','created_at']
     def has_add_permission(self,request):return False
+
+from .models import SLAPolicy
+
+@admin.register(SLAPolicy)
+class SLAPolicyAdmin(admin.ModelAdmin):
+    list_display = ('priority', 'resolution_hours', 'open_hour', 'close_hour', 'enabled')
+    list_editable = ('enabled',)
