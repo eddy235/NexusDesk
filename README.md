@@ -43,3 +43,16 @@ Run tests: `python manage.py test`
 
 ## Portfolio description
 NexusDesk is an IT operations dashboard supporting service requests, IT asset tracking, role-based permissions, and deadline monitoring. It demonstrates end-to-end Django development and practical security-focused application design.
+
+
+## v0.2 — Helpdesk workflows
+
+- Ticket search searches title, description and category **only among tickets the current user can access**.
+- Status and priority filters can be combined with search.
+- Reporters, assigned technicians and staff can comment on their visible tickets; comments and ticket-change events retain author and timestamp.
+- Only staff users can change ticket status, assignment or deadline. Ticket comments and updates use separate CSRF-protected actions.
+- Dashboard now surfaces active tickets without an assignee.
+
+After pulling this release, run `python manage.py migrate` to create the comment table, then `python manage.py test`.
+
+**Security note:** NexusDesk is currently intended for local/internal development, not a public deployment with real employee records. Do not publish a production instance without a deployment, permissions and data-protection review.
