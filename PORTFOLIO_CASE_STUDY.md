@@ -44,7 +44,8 @@ NexusDesk uses a distinct modern light SaaS identity: warm off-white canvas, whi
 3. Asset registration, lifecycle updates and actor/time-stamped change history
 4. Optional SLA resolution policies, due-soon monitoring and audit-only breach recording
 5. Synthetic read-only portfolio demonstration with search, filters and sample KPIs
-6. Repeatable offline regression tests and optional external HTTP release checks
+6. Staff-only operational reports with ticket status/priority/category insights and a CSV export protected against spreadsheet formula injection
+7. Repeatable offline regression tests and optional external HTTP release checks
 
 ## Security design decisions
 
