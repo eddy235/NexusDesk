@@ -1,4 +1,47 @@
 {% load static %}
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{% block title %}NexusDesk{% endblock %}</title><link rel="stylesheet" href="{% static 'desk/style.css' %}"></head><body>
-<a class="skip" href="#content">Skip to content</a><div class="layout"><aside class="side"><a class="brand" href="{% url 'dashboard' %}"><span>✦</span> NexusDesk.</a><p class="eyebrow">IT OPERATIONS / WORKSPACE</p><nav aria-label="Primary navigation"><a href="{% url 'dashboard' %}">◈ Overview</a><a href="{% url 'ticket_list' %}">◎ Support tickets</a><a href="{% url 'asset_list' %}">▦ Asset inventory</a>{% if user.is_staff %}<a href="/admin/">⚙ Administration</a>{% endif %}</nav><div class="side-bottom"><span class="online"></span> Internal service desk<small>v0.3 · Asset & SLA monitoring</small></div></aside>
-<div class="workspace"><header class="top"><span>WORKSPACE / <strong>IT OPERATIONS</strong></span>{% if user.is_authenticated %}<div class="profile">{{ user.username }} <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="link-button">Sign out</button></form></div>{% endif %}</header><main id="content" class="shell" tabindex="-1">{% for message in messages %}<p class="notice">{{ message }}</p>{% endfor %}{% block content %}{% endblock %}<footer>© NexusDesk · Designed for authorized IT operations · Demo deployment not configured</footer></main></div></div></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#F5F7FA">
+  <title>{% block title %}NexusDesk — IT workspace{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'desk/style.css' %}">
+</head>
+<body class="{% if user.is_authenticated %}app-body{% else %}auth-body{% endif %}">
+  <a class="skip" href="#content">Skip to content</a>
+  <div class="layout">
+    {% if user.is_authenticated %}
+    <aside class="side">
+      <a class="brand" href="{% url 'dashboard' %}" aria-label="NexusDesk home"><span class="brand-mark" aria-hidden="true">N</span><span>Nexus<span class="brand-accent">Desk</span><small>IT service workspace</small></span></a>
+      <p class="nav-label">Workspace</p>
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <a href="{% url 'dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active" aria-current="page"{% endif %}><span class="nav-icon" aria-hidden="true">▦</span> Overview</a>
+        <a href="{% url 'ticket_list' %}" {% if request.resolver_match.url_name == 'ticket_list' or request.resolver_match.url_name == 'ticket_detail' or request.resolver_match.url_name == 'ticket_create' %}class="active" aria-current="page"{% endif %}><span class="nav-icon" aria-hidden="true">☰</span> Support tickets</a>
+        <a href="{% url 'asset_list' %}" {% if request.resolver_match.url_name == 'asset_list' or request.resolver_match.url_name == 'asset_create' or request.resolver_match.url_name == 'asset_update' %}class="active" aria-current="page"{% endif %}><span class="nav-icon" aria-hidden="true">▤</span> Asset inventory</a>
+      </nav>
+      {% if user.is_staff %}
+      <p class="nav-label nav-label-secondary">Manage</p>
+      <nav class="primary-nav" aria-label="Administration"><a href="{% url 'admin:index' %}"><span class="nav-icon" aria-hidden="true">⚙</span> Administration</a></nav>
+      {% endif %}
+      <div class="side-bottom"><span class="side-indicator" aria-hidden="true"></span><div><strong>Service workspace</strong><small>v0.8 · Operational tools</small></div></div>
+    </aside>
+    {% else %}
+    <header class="auth-header"><a class="brand" href="{% url 'login' %}"><span class="brand-mark" aria-hidden="true">N</span><span>Nexus<span class="brand-accent">Desk</span></span></a><span class="auth-header-note">Internal IT management</span></header>
+    {% endif %}
+    <div class="workspace">
+      {% if user.is_authenticated %}
+      <header class="top">
+        <div class="top-context"><span class="top-kicker">NexusDesk</span><span class="top-separator" aria-hidden="true">/</span><strong>Service workspace</strong></div>
+        <div class="profile"><span class="avatar" aria-hidden="true">{{ user.username|first|upper }}</span><span class="profile-name">{{ user.username }}</span><form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="link-button">Sign out</button></form></div>
+      </header>
+      {% endif %}
+      <main id="content" class="shell" tabindex="-1">
+        {% for message in messages %}<p class="notice" role="status">{{ message }}</p>{% endfor %}
+        {% block content %}{% endblock %}
+        {% if user.is_authenticated %}<footer>NexusDesk · IT service management · v0.8</footer>{% endif %}
+      </main>
+    </div>
+  </div>
+</body>
+</html>
