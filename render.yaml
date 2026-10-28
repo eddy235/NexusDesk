@@ -3,6 +3,7 @@ services:
     name: nexusdesk-demo
     runtime: python
     plan: free
+    healthCheckPath: /health/
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
     startCommand: "gunicorn nexusdesk.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
@@ -13,6 +14,8 @@ services:
       - key: DJANGO_DEBUG
         value: "false"
       - key: DJANGO_SECURE_SSL_REDIRECT
+        value: "true"
+      - key: DJANGO_ENABLE_HSTS
         value: "true"
       - key: PYTHON_VERSION
         value: "3.12.8"
