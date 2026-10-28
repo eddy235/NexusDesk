@@ -27,5 +27,7 @@ jobs:
         run: python manage.py makemigrations --check --dry-run
       - name: Django system checks
         run: python manage.py check
+      - name: Prepare static assets
+        run: python manage.py collectstatic --noinput
       - name: Run tests
         run: python manage.py test --verbosity 2
