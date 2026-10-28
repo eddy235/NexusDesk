@@ -1,7 +1,15 @@
 {% extends 'base.html' %}
+{% block title %}Asset inventory · NexusDesk{% endblock %}
 {% block content %}
-<div class="heading"><div><div class="eyebrow">HARDWARE / INVENTORY · V0.3</div><h1>Asset lifecycle</h1></div>{% if user.is_staff %}<a class="btn" href="{% url 'asset_create' %}">+ Register asset</a>{% endif %}</div>
-<section class="panel"><div class="table-wrap"><table><thead><tr><th>Asset tag</th><th>Device</th><th>Type</th><th>Status</th><th>Location</th><th>Assigned to</th>{% if user.is_staff %}<th>Actions</th>{% endif %}</tr></thead><tbody>
-{% for asset in assets %}<tr><td>{{asset.asset_tag}}</td><td>{{asset.name}}</td><td>{{asset.get_asset_type_display}}</td><td><span class="tag">{{asset.get_status_display}}</span></td><td>{{asset.location|default:"—"}}</td><td>{{asset.assigned_to|default:"Unassigned"}}</td>{% if user.is_staff %}<td><a href="{% url 'asset_update' asset.pk %}">Edit asset</a></td>{% endif %}</tr>
-{% empty %}<tr><td colspan="7">No assets registered.</td></tr>{% endfor %}
-</tbody></table></div></section>{% endblock %}
+<div class="heading">
+  <div><div class="eyebrow">Equipment</div><h1>Asset inventory</h1><p class="page-intro">Keep track of devices, their locations and lifecycle states.</p></div>
+  {% if user.is_staff %}<a class="btn" href="{% url 'asset_create' %}"><span class="btn-icon" aria-hidden="true">+</span> Register asset</a>{% endif %}
+</div>
+<section class="panel">
+  <div class="table-wrap"><table><thead><tr><th scope="col">Asset tag</th><th scope="col">Device</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Location</th><th scope="col">Assigned to</th>{% if user.is_staff %}<th scope="col">Action</th>{% endif %}</tr></thead><tbody>
+    {% for asset in assets %}
+    <tr><td class="ticket-id">{{ asset.asset_tag }}</td><td><strong>{{ asset.name }}</strong></td><td>{{ asset.get_asset_type_display }}</td><td><span class="status-pill status-{{ asset.status }}">{{ asset.get_status_display }}</span></td><td>{{ asset.location|default:"—" }}</td><td>{{ asset.assigned_to|default:"Unassigned" }}</td>{% if user.is_staff %}<td><a class="text-link" href="{% url 'asset_update' asset.pk %}">Edit →</a></td>{% endif %}</tr>
+    {% empty %}<tr><td colspan="7">No assets registered yet.</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% endblock %}

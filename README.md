@@ -1,4 +1,4 @@
-# NexusDesk — IT Management Platform (v0.7)
+# NexusDesk — IT Management Platform (v0.8)
 
 A local-first IT service desk and asset inventory application. Built using **Python, Django, SQLite, HTML/CSS**, with built-in login sessions and CSRF protection. Intended as an evolving full-stack portfolio project, not a publicly hosted multi-tenant SaaS service.
 
@@ -8,7 +8,7 @@ A local-first IT service desk and asset inventory application. Built using **Pyt
 - Technician/admin updates to status, assignee and deadline, with basic audit events.
 - Asset inventory; staff can register assets while employees see only assets assigned to them.
 - Staff/employee permission boundaries and regression tests.
-- Responsive dark command-center styling inspired by SecureScan, with keyboard focus and skip links.
+- An independent light slate-and-teal SaaS interface with responsive cards, clear ticket/asset tables, keyboard focus and skip links.
 
 ## Quick start (Windows PowerShell)
 
@@ -142,3 +142,12 @@ python scripts/verify_demo_http.py https://YOUR-VERIFIED-SERVICE.onrender.com
 The Blueprint itself does not launch a service until it is applied in a Render
 account. **Do not link to an unverified demo URL**. Internal/private operational
 data and admin routes must never be enabled on the public synthetic demo.
+
+
+## v0.8 — Distinct modern SaaS interface
+
+Replaced the earlier SecureScan-inspired dark visual styling with a **light slate-and-teal product identity**. The app shell, overview cards, ticket queue and detail, asset inventory, forms, login and read-only portfolio demo now use one simple CSS design system. Status chips use restrained, semantic colors. Navigation keeps active-page indicators and adapts to narrow screens. The public demo remains **synthetic and read-only**; no routes, permissions, models or migrations were changed.
+
+See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full palette, layout principles and UI review checklist.
+
+If you already run NexusDesk locally, pull the latest main branch and restart Django; there are **no new migrations**. If the old colors remain visible, use a hard refresh (Ctrl+Shift+R). The optional Render Blueprint demo will update only if your Render service is configured to deploy changes from GitHub.

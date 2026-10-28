@@ -1,1 +1,12 @@
-{% extends 'base.html' %}{% block content %}<div class="eyebrow">IT WORKSPACE / REQUEST</div><h1>{{heading}}</h1><section class="panel form-panel"><form method="post">{% csrf_token %}{{form.as_p}}<button type="submit" class="btn">Save →</button></form></section>{% endblock %}
+{% extends 'base.html' %}
+{% block title %}{{ heading }} · NexusDesk{% endblock %}
+{% block content %}
+<div class="heading"><div><div class="eyebrow">Workspace / Form</div><h1>{{ heading }}</h1><p class="page-intro">Complete the details below to save your changes.</p></div></div>
+<section class="panel form-panel">
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Save changes</button>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</section>
+{% endblock %}
