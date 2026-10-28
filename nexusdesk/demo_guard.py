@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 
 
 class DemoGuardMiddleware:
@@ -10,6 +10,8 @@ class DemoGuardMiddleware:
     def __call__(self, request):
         if settings.DEMO_MODE:
             path = request.path
+            if path == '/' and request.method in ('GET', 'HEAD'):
+                return HttpResponseRedirect('/demo/')
             if not (path in ('/', '/demo/', '/health/') or
                     path.startswith('/static/')):
                 return HttpResponseNotFound('Not available in read-only demo mode.')
