@@ -1,4 +1,4 @@
-# NexusDesk — IT Management Platform (v0.3)
+# NexusDesk — IT Management Platform (v0.4)
 
 A local-first IT service desk and asset inventory application. Built using **Python, Django, SQLite, HTML/CSS**, with built-in login sessions and CSRF protection. Intended as an evolving full-stack portfolio project, not a publicly hosted multi-tenant SaaS service.
 
@@ -63,3 +63,12 @@ After pulling this release, run `python manage.py migrate` to create the comment
 Asset inventory includes lifecycle states (Available, Assigned, Maintenance, Retired). Staff can edit assets and changes are logged as timestamped asset events with the actor and changed field names. Regular employees retain access only to assets assigned to them, and cannot modify inventory. The dashboard highlights active tickets overdue or due within the next 24 hours. These indicators are **calendar-hour deadline checks**, not a configurable business-hours SLA engine; notifications and escalations are out of scope.
 
 Run `python manage.py migrate` after updating, then `python manage.py test`. This is still a local/internal prototype, not a production-hosted system.
+
+
+## v0.4 — Configurable resolution deadlines and escalation audit
+
+Administrators can define an optional resolution-time SLA policy for each ticket priority in Django Admin (priority, hours, start/end of the working day, enabled flag). New tickets matching a policy receive a calculated due date based on Monday–Friday business hours in the configured Django timezone. Policies do not retroactively change existing tickets; staff may still override ticket deadlines manually.
+
+Run `python manage.py migrate` and `python manage.py test`. To record breaches, schedule `python manage.py check_sla` periodically with a trusted scheduler. This is an **audit-only escalation**: the command creates a ticket event and records the first breach. It does not send email or automatically assign tickets. Repeated runs avoid recording duplicate events unless the deadline is explicitly changed and reset. Overdue tickets with manually set deadlines are also audited.
+
+Limitations: single fixed daily weekday working interval; no holiday calendars, overnight shifts, notifications, escalation recipient routing, or background scheduler. SQLite concurrency behavior is for local development; assess a production database and locking before multi-worker deployment.
