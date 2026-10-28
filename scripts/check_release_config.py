@@ -4,6 +4,11 @@ Run only with production-like environment variables. This does NOT prove the
 public website is secure, and never replaces the live HTTP smoke test.
 """
 import os
+import sys
+from pathlib import Path
+
+# Running this file directly adds scripts/ rather than the project root to sys.path.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nexusdesk.settings")
 
