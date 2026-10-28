@@ -22,6 +22,7 @@ jobs:
           unzip -q NexusDesk_v0.1_GitHub_Starter.zip -d /tmp/nexusdesk-import
           test -f /tmp/nexusdesk-import/NexusDesk/manage.py
           cp -a /tmp/nexusdesk-import/NexusDesk/. .
+          rm -f .github/workflows/tests.yml
           rm NexusDesk_v0.1_GitHub_Starter.zip
           test -f manage.py
           test -f requirements.txt
