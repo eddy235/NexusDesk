@@ -1,4 +1,4 @@
-# NexusDesk — IT Management Platform (v0.8)
+# NexusDesk — IT Management Platform (v0.9)
 
 A local-first IT service desk and asset inventory application. Built using **Python, Django, SQLite, HTML/CSS**, with built-in login sessions and CSRF protection. Intended as an evolving full-stack portfolio project, not a publicly hosted multi-tenant SaaS service.
 
@@ -151,3 +151,29 @@ Replaced the earlier SecureScan-inspired dark visual styling with a **light slat
 See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for the full palette, layout principles and UI review checklist.
 
 If you already run NexusDesk locally, pull the latest main branch and restart Django; there are **no new migrations**. If the old colors remain visible, use a hard refresh (Ctrl+Shift+R). The optional Render Blueprint demo will update only if your Render service is configured to deploy changes from GitHub.
+
+
+## v0.9 — Technician operational reports and safe CSV export
+
+A new **Reports** navigation item is available **only to authenticated IT staff**.
+The report at `/reports/` summarizes tickets created in the last 7, 30 or
+90 days (or all time), grouped by current status, priority and top category.
+It also highlights overdue, unassigned and escalated active tickets.
+
+The **Export ticket CSV** action at `/reports/export.csv` uses the same creation
+period and requires staff access. It exports ticket identifiers, titles,
+categories, priority, status, assignee, creation/deadline timestamps and
+current overdue flag. Ticket descriptions, comments, passwords and email
+addresses are intentionally excluded. Untrusted text fields are prefixed when
+necessary to prevent spreadsheet formula execution on opening the CSV.
+
+Asset lifecycle counts reflect **current inventory across all dates** and
+do not change with the ticket period filter. Current status breakdowns are
+**not historical resolution-time measurements**. Reporting pages and exports
+remain inaccessible in public demo mode. This version introduces no database
+migration and does not modify the synthetic demo data or permissions.
+
+After pulling the new version locally, restart your Django server and visit
+`/reports/` while signed in as an IT staff user. Run `python manage.py test`
+before using real internal information. See `DESIGN_SYSTEM.md` for the shared
+slate-and-teal visual styling.
