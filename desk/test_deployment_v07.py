@@ -11,6 +11,8 @@ class DeploymentVerifierTests(SimpleTestCase):
         paths = []
         def fake_probe(base, path, method='GET'):
             paths.append((path, method))
+            if method != 'GET':
+                return 404, {}, b'Not available in read-only demo mode.'
             if path == '/health/':
                 return 200, {}, b'{"status":"ok","demo_mode":true}'
             if path == '/demo/':
