@@ -1,4 +1,4 @@
-# NexusDesk — IT Management Platform (v0.9)
+# NexusDesk — IT Management Platform (v1.0)
 
 A local-first IT service desk and asset inventory application. Built using **Python, Django, SQLite, HTML/CSS**, with built-in login sessions and CSRF protection. Intended as an evolving full-stack portfolio project, not a publicly hosted multi-tenant SaaS service.
 
@@ -177,3 +177,41 @@ After pulling the new version locally, restart your Django server and visit
 `/reports/` while signed in as an IT staff user. Run `python manage.py test`
 before using real internal information. See `DESIGN_SYSTEM.md` for the shared
 slate-and-teal visual styling.
+
+
+## v1.0 — First portfolio release
+
+Version 1.0 marks the first **release-quality portfolio milestone**. It does not
+mean this project has been independently penetration-tested or certified for
+real production data. The internal application remains intended for local or
+reviewed private environments; the hosted public preview uses **fictional,
+read-only records**.
+
+Release changes include:
+
+- Only **active IT staff** appear as ticket assignees in technician forms and Django Admin.
+- Editing ticket deadlines now uses the correct HTML `datetime-local` format, preserving existing dates.
+- Ticket and asset activity events are viewable but cannot be manually created,
+  modified or deleted through Django Admin. This is **not** a tamper-proof audit store;
+  application/database administrators could still modify data outside the admin UI.
+- End-to-end tests cover request creation, comments, access isolation, technician
+  assignment, resolution, reports, CSRF enforcement and activity-log permissions.
+- CI now validates dependencies and a production-like **synthetic demo** runtime
+  configuration in addition to the Django tests and migrations checks.
+
+**Release resources:** [CHANGELOG.md](CHANGELOG.md) ·
+[RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) ·
+[SECURITY.md](SECURITY.md) ·
+[DEPLOYMENT.md](DEPLOYMENT.md) ·
+[DESIGN_SYSTEM.md](DESIGN_SYSTEM.md).
+
+**Upgrade from v0.9:** pull the new GitHub code, back up your local `db.sqlite3`,
+install requirements if needed, run `python manage.py migrate` and
+`python manage.py test`, and restart the development server. Version 1.0 has
+no new migration. If a ticket previously points to an inactive or non-staff
+assignee, reassign it to an active technician before editing it in the form.
+
+To publish or update the synthetic Render demo, confirm that
+`NEXUSDESK_DEMO_MODE=true` and `DJANGO_DEBUG=false`, then run the live
+verification script against **your actual HTTPS deployment URL**. Passing CI
+checks is not equivalent to verifying the deployed website.
