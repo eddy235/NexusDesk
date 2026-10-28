@@ -12,7 +12,7 @@ from urllib.request import Request, urlopen
 
 def probe(base, path, method="GET"):
     request = Request(base + path, method=method,
-                      headers={"User-Agent": "NexusDesk-Release-Smoke/0.7"})
+                      headers={"User-Agent": "NexusDesk-Release-Smoke/1.0"})
     try:
         with urlopen(request, timeout=12) as response:
             return response.status, dict(response.headers), response.read(120000)
@@ -47,7 +47,7 @@ def verify(base):
     status, _, _ = probe(base, "/static/desk/style.css")
     assert status == 200, f"Static CSS returned {status}"
 
-    for path in ("/admin/", "/login/", "/tickets/", "/assets/", "/tickets/new/"):
+    for path in ("/admin/", "/login/", "/tickets/", "/assets/", "/tickets/new/", "/reports/", "/reports/export.csv"):
         status, _, _ = probe(base, path)
         assert status == 404, f"Private route {path} returned {status}, expected 404"
     for path in ("/demo/", "/tickets/new/", "/health/"):
