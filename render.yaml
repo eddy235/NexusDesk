@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: nexusdesk-demo
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn nexusdesk.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: NEXUSDESK_DEMO_MODE
+        value: "true"
+      - key: DJANGO_DEBUG
+        value: "false"
+      - key: DJANGO_SECURE_SSL_REDIRECT
+        value: "true"
+      - key: PYTHON_VERSION
+        value: "3.12.8"
