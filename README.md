@@ -1,4 +1,4 @@
-# NexusDesk — IT Management Platform (v0.4)
+# NexusDesk — IT Management Platform (v0.5)
 
 A local-first IT service desk and asset inventory application. Built using **Python, Django, SQLite, HTML/CSS**, with built-in login sessions and CSRF protection. Intended as an evolving full-stack portfolio project, not a publicly hosted multi-tenant SaaS service.
 
@@ -72,3 +72,23 @@ Administrators can define an optional resolution-time SLA policy for each ticket
 Run `python manage.py migrate` and `python manage.py test`. To record breaches, schedule `python manage.py check_sla` periodically with a trusted scheduler. This is an **audit-only escalation**: the command creates a ticket event and records the first breach. It does not send email or automatically assign tickets. Repeated runs avoid recording duplicate events unless the deadline is explicitly changed and reset. Overdue tickets with manually set deadlines are also audited.
 
 Limitations: single fixed daily weekday working interval; no holiday calendars, overnight shifts, notifications, escalation recipient routing, or background scheduler. SQLite concurrency behavior is for local development; assess a production database and locking before multi-worker deployment.
+
+
+## v0.5 — Secure portfolio demo foundation
+
+The application now supports an **isolated, read-only public demonstration** selected by `NEXUSDESK_DEMO_MODE=true`. The demo page at `/demo/` displays hardcoded fictional tickets and inventory. All requests to login, admin, real tickets, real assets, and other internal routes are blocked in demo mode, including POST requests. The root URL redirects to the fictional overview. No demo user accounts or real records are exposed.
+
+A `render.yaml` blueprint configures a Render web service with demo mode enabled and no database. You must connect the repository to Render yourself to deploy it; adding this file does not deploy a service. **Do not enable the internal application as a public service containing real data.**
+
+For an internal/private installation, `DATABASE_URL` optionally selects PostgreSQL. Local development still uses SQLite unless `DATABASE_URL` is set. Production requires a secret key, explicit host/CSRF values, HTTPS and an independently reviewed deployment. Do not set `DJANGO_DEBUG=true` in demo mode. The public demo is stateless and does not run database migrations.
+
+Local test commands:
+
+```powershell
+$env:DJANGO_DEBUG='true'
+python manage.py migrate
+python manage.py test
+python manage.py runserver
+```
+
+After connecting a demo deployment, verify `/health/`, verify `/demo/` renders synthetic examples, and check that `/login/`, `/admin/`, `/tickets/` and POST requests do not expose write access. No claim of independent penetration testing or production certification is implied.
