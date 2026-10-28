@@ -1,0 +1,27 @@
+{% load static %}
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="NexusDesk read-only demonstration using fictional IT support data.">
+<title>NexusDesk — Read-only portfolio demo</title>
+<link rel="stylesheet" href="{% static 'desk/style.css' %}"></head>
+<body><a class="skip" href="#content">Skip to content</a>
+<div class="layout"><aside class="side"><a class="brand" href="/demo/"><span>✦</span> NexusDesk.</a>
+<p class="eyebrow">PORTFOLIO / PUBLIC PREVIEW</p><nav aria-label="Demo sections">
+<a href="#overview">◈ Overview</a><a href="#tickets">◎ Example tickets</a><a href="#assets">▦ Sample assets</a></nav>
+<div class="side-bottom"><span class="online"></span> Read-only synthetic demo<small>v0.5 · No real accounts or data</small></div></aside>
+<div class="workspace"><header class="top"><span>WORKSPACE / <strong>PORTFOLIO DEMO</strong></span><span>SYNTHETIC DATA ONLY</span></header>
+<main id="content" class="shell" tabindex="-1"><section class="hero" id="overview"><div class="eyebrow">NEXUSDESK / IT OPERATIONS</div>
+<h1>IT operations.<br><em>Under control.</em></h1>
+<p>Explore the layout of an IT service desk. All figures, tickets, names and assets shown below are fictional examples. The public demo cannot create tickets, log in or access internal records.</p>
+</section><section class="metrics" aria-label="Synthetic sample metrics">
+<article><small>OPEN TICKETS</small><strong>{{ stats.open }}</strong><p>Example queue</p></article>
+<article><small>IN PROGRESS</small><strong>{{ stats.in_progress }}</strong><p>Example active requests</p></article>
+<article><small>OVERDUE</small><strong class="warn">{{ stats.overdue }}</strong><p>Illustrative deadlines</p></article>
+<article><small>INVENTORY</small><strong>{{ stats.assets }}</strong><p>Fictional asset count</p></article></section>
+<section id="tickets" class="panel"><div class="heading"><div><div class="eyebrow">SAMPLE SUPPORT QUEUE</div><h2>Ticket overview</h2></div></div>
+<div class="table-wrap"><table><thead><tr><th>Ticket</th><th>Summary</th><th>Priority</th><th>Status</th><th>Assigned to</th></tr></thead>
+<tbody>{% for ticket in tickets %}<tr><td>{{ ticket.code }}</td><td>{{ ticket.title }}</td><td>{{ ticket.priority }}</td><td>{{ ticket.status }}</td><td>{{ ticket.owner }}</td></tr>{% endfor %}</tbody></table></div></section>
+<section id="assets" class="panel" style="margin-top:20px"><div class="heading"><div><div class="eyebrow">FICTIONAL INVENTORY</div><h2>Asset lifecycle</h2></div></div>
+<div class="table-wrap"><table><thead><tr><th>Tag</th><th>Device</th><th>State</th></tr></thead>
+<tbody>{% for asset in assets %}<tr><td>{{ asset.tag }}</td><td>{{ asset.name }}</td><td>{{ asset.state }}</td></tr>{% endfor %}</tbody></table></div></section>
+<footer>NEXUSDESK · PORTFOLIO PREVIEW · Not a live IT support system</footer></main></div></div></body></html>
