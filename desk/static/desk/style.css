@@ -4,3 +4,17 @@
 .filters{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.filters input[type="search"],.filters select{background:#101d33;border:1px solid #3a5575;border-radius:9px;padding:10px 12px;color:#eff7ff;max-width:100%;min-height:42px}.filters label{font-size:12px}.filters button{min-height:42px}
 .comment-list{display:grid;gap:12px;margin:18px 0}.comment{border:1px solid #314763;border-radius:12px;padding:14px;background:#0d1d34;overflow-wrap:anywhere}.comment strong{font-size:13px}.comment small{display:block;color:#9bb3cf;margin-top:4px}.comment p{line-height:1.6;font-size:13px}
 @media(max-width:690px){.filters{align-items:stretch;flex-direction:column}.filters>*{width:100%;max-width:none}.metrics{grid-template-columns:repeat(auto-fit,minmax(155px,1fr))}}
+
+/* v0.6: clear and accessible read-only portfolio exploration */
+.demo-disclaimer{max-width:830px;padding:13px 16px;border-radius:12px;border:1px solid #397e91;background:#10283f;color:#d6edf8!important;font-size:13px}
+.demo-filter-controls{display:flex;flex-wrap:wrap;gap:13px;align-items:flex-end;margin:8px 0 20px}
+.demo-field{display:flex;flex-direction:column;gap:7px;min-width:165px}
+.demo-search{flex:2 1 245px}.demo-field label{font-size:12px;color:#b0cce1;font-weight:700}
+.demo-field input,.demo-field select{min-height:45px;width:100%;max-width:none}
+.demo-actions{display:flex;gap:15px;align-items:center;flex-wrap:wrap}
+.demo-actions .btn{margin:0;min-height:45px}
+.demo-caption{font-size:12px;color:#b0d3e8;white-space:nowrap}
+.demo-spaced{margin-top:20px}
+.demo-top-label{color:#93e9f4;font-weight:700}
+@media(max-width:620px){.demo-field,.demo-actions{width:100%}.demo-actions .btn{flex:1}.demo-top-label{font-size:9px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-contrast:more){.demo-disclaimer,.demo-field input,.demo-field select{border-color:#a2e8f5}.demo-caption{color:#edfaff}}
