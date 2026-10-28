@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from django.db.models import Count,Q
 from django.shortcuts import get_object_or_404,redirect,render
 from django.utils import timezone
-from .models import Ticket,Asset,TicketEvent,TicketComment
+from .models import Ticket,Asset,TicketEvent,TicketComment,AssetEvent
 from .forms import TicketForm,TicketUpdateForm,AssetForm,TicketCommentForm
 
 def is_staff(user):return user.is_authenticated and user.is_staff
@@ -16,8 +16,10 @@ def visible_tickets(user):
 def dashboard(request):
     tickets=visible_tickets(request.user)
     counts={key:tickets.filter(status=key).count() for key,_ in Ticket.STATUS}
-    overdue=tickets.exclude(status__in=['resolved','closed']).filter(due_at__lt=timezone.now()).count()
-    return render(request,'desk/dashboard.html',{'counts':counts,'overdue':overdue,'recent':tickets.order_by('-created_at')[:6],'unassigned':tickets.filter(assigned_to__isnull=True).exclude(status__in=['resolved','closed']).count(),'assets_count':Asset.objects.count() if request.user.is_staff else Asset.objects.filter(assigned_to=request.user).count()})
+    active=tickets.exclude(status__in=['resolved','closed'])
+    overdue=active.filter(due_at__lt=timezone.now()).count()
+    due_soon=active.filter(due_at__gte=timezone.now(),due_at__lte=timezone.now()+timezone.timedelta(hours=24)).count()
+    return render(request,'desk/dashboard.html',{'counts':counts,'overdue':overdue,'due_soon':due_soon,'recent':tickets.order_by('-created_at')[:6],'unassigned':tickets.filter(assigned_to__isnull=True).exclude(status__in=['resolved','closed']).count(),'assets_count':Asset.objects.count() if request.user.is_staff else Asset.objects.filter(assigned_to=request.user).count()})
 
 @login_required
 def ticket_list(request):
@@ -80,6 +82,30 @@ def asset_list(request):
 def asset_create(request):
     form=AssetForm(request.POST or None)
     if request.method=='POST' and form.is_valid():
-        form.save();messages.success(request,'Asset registered.')
+        asset=form.save()
+        AssetEvent.objects.create(asset=asset,actor=request.user,event='Asset registered')
+        messages.success(request,'Asset registered.')
         return redirect('asset_list')
     return render(request,'desk/form.html',{'form':form,'heading':'Register IT asset'})
+
+@user_passes_test(is_staff,login_url='login')
+def asset_update(request,pk):
+    asset=get_object_or_404(Asset,pk=pk)
+    before=(asset.name,asset.asset_type,asset.status,asset.serial_number,
+            asset.location,asset.assigned_to_id,asset.notes)
+    form=AssetForm(request.POST or None,instance=asset)
+    if request.method=='POST' and form.is_valid():
+        updated=form.save()
+        after=(updated.name,updated.asset_type,updated.status,updated.serial_number,
+               updated.location,updated.assigned_to_id,updated.notes)
+        if before!=after:
+            changes=[]
+            labels=('name','type','status','serial','location','assignee','notes')
+            for name,old,new in zip(labels,before,after):
+                if old!=new:
+                    changes.append(name)
+            AssetEvent.objects.create(asset=updated,actor=request.user,
+                                      event='Updated: '+', '.join(changes))
+        messages.success(request,'Asset updated.')
+        return redirect('asset_list')
+    return render(request,'desk/form.html',{'form':form,'heading':'Update asset: '+asset.asset_tag})
