@@ -20,6 +20,12 @@ def probe(base, path, method="GET"):
         return exc.code, dict(exc.headers), exc.read(120000)
 
 
+def header_value(headers, name):
+    """HTTP field names are case-insensitive; normal dict keys may not be."""
+    return next((str(value) for key, value in headers.items()
+                 if str(key).lower() == name.lower()), '')
+
+
 def verify(base):
     base = base.rstrip("/")
     target = urlsplit(base)
@@ -37,12 +43,22 @@ def verify(base):
     assert status == 200, f"Demo returned {status}"
     html = raw.decode("utf-8")
     for expected in ("SYNTHETIC DATA ONLY", "NexusDesk",
-                     "Filter examples", "Asset lifecycle"):
+                     "Filter examples", "Asset lifecycle", "v1.0"):
         assert expected in html, f"Demo missing expected element: {expected}"
-    csp = headers.get("Content-Security-Policy", "")
+    csp = header_value(headers, "Content-Security-Policy")
     assert "script-src 'none'" in csp, "Expected restrictive script policy"
     assert "frame-ancestors 'none'" in csp, "Expected anti-framing policy"
-    assert headers.get("X-Content-Type-Options") == "nosniff"
+    assert header_value(headers, "X-Content-Type-Options").lower() == "nosniff"
+
+    status, _, filtered = probe(base, "/demo/?status=Open&priority=High")
+    assert status == 200, f"Ticket filter returned {status}"
+    assert b"Email client authentication failure" in filtered, "Open/high filter did not include expected fictional ticket"
+    assert b"Laptop VPN connection intermittent" not in filtered, "Open/high filter included an in-progress ticket"
+
+    status, _, filtered_assets = probe(base, "/demo/?asset_state=Maintenance")
+    assert status == 200, f"Asset filter returned {status}"
+    assert b"Wireless access point" in filtered_assets, "Asset maintenance filter did not include expected item"
+    assert b"External display" not in filtered_assets, "Asset maintenance filter included available equipment"
 
     status, _, _ = probe(base, "/static/desk/style.css")
     assert status == 200, f"Static CSS returned {status}"
@@ -53,7 +69,7 @@ def verify(base):
     for path in ("/demo/", "/tickets/new/", "/health/"):
         status, _, _ = probe(base, path, method="POST")
         assert status == 404, f"Write request {path} returned {status}, expected 404"
-    print("PASS: synthetic dashboard, assets, health, static files and demo isolation")
+    print("PASS: v1.0 synthetic dashboard, filters, health, security headers, static files and demo isolation")
 
 
 if __name__ == "__main__":
