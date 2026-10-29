@@ -26,6 +26,34 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Diagnose public demo response (read-only)
+        env:
+          DEMO_ORIGIN: ${{ github.event.inputs.demo_origin || 'https://nexusdesk-demo.onrender.com' }}
+        run: |
+          python - <<'PY'
+          import os
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError
+
+          base = os.environ["DEMO_ORIGIN"].rstrip("/")
+          for route in ("/health/", "/demo/", "/static/desk/style.css",
+                        "/admin/", "/login/", "/tickets/", "/reports/"):
+              try:
+                  with urlopen(Request(base + route), timeout=30) as response:
+                      status = response.status
+                      headers = response.headers
+                      body = response.read(160000) if route == "/demo/" else b""
+              except HTTPError as exc:
+                  status, headers, body = exc.code, exc.headers, b""
+              print(f"{route}: HTTP {status}")
+              if route == "/demo/":
+                  html = body.decode("utf-8", errors="replace")
+                  print("v1.0 marker:", "v1.0" in html)
+                  print("v0.8 marker:", "v0.8" in html)
+                  print("v0.6 marker:", "v0.6" in html)
+                  print("CSP:", headers.get("Content-Security-Policy", "<missing>"))
+                  print("X-Content-Type-Options:", headers.get("X-Content-Type-Options", "<missing>"))
+          PY
       - name: Check live synthetic demo with startup retries
         env:
           DEMO_ORIGIN: ${{ github.event.inputs.demo_origin || 'https://nexusdesk-demo.onrender.com' }}
