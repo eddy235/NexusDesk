@@ -1,0 +1,44 @@
+name: NexusDesk hosted demo verification
+
+on:
+  push:
+    branches:
+      - 'verify/hosted-demo-*'
+  workflow_dispatch:
+    inputs:
+      demo_origin:
+        description: 'HTTPS origin of public synthetic demo (no trailing /demo/)'
+        required: true
+        type: string
+        default: 'https://nexusdesk-demo.onrender.com'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-hosted-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Get release verification script
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check live synthetic demo with startup retries
+        env:
+          DEMO_ORIGIN: ${{ github.event.inputs.demo_origin || 'https://nexusdesk-demo.onrender.com' }}
+        run: |
+          for attempt in 1 2 3 4; do
+            echo "Live-demo verification attempt $attempt"
+            if python scripts/verify_demo_http.py "$DEMO_ORIGIN"; then
+              echo "Live-demo verification passed"
+              exit 0
+            fi
+            if [ "$attempt" -lt 4 ]; then
+              sleep 25
+            fi
+          done
+          echo "Live demo could not be verified; do not claim independent verification."
+          exit 1
