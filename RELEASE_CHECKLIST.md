@@ -59,3 +59,7 @@ On a fresh **local or private** setup (never the public synthetic demo):
 The GitHub CI result is machine-verifiable; actual deployment status and
 manual browser checks must be marked by the project owner. **Do not mark them
 complete based solely on a successful merge**.
+
+## Live demo smoke-test evidence (29 October 2026)
+
+The v1.0 hosted preview at https://nexusdesk-demo.onrender.com/demo/ passed the [GitHub-hosted live verification run](https://github.com/eddy235/NexusDesk/actions/runs/40844351137): synthetic v1.0 page, status/priority and asset filters, CSS, expected security headers, private routes returning 404, and write requests being rejected. Separate manual mobile visual review and a portfolio-site update are **not implied** by this successful automated test.
