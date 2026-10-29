@@ -1,0 +1,18 @@
+name: Portfolio static preview checks
+on:
+  push:
+    branches:
+      - 'portfolio/static-render-staging'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check-static-site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify source-derived portfolio preview
+        run: python portfolio-site/verify_site.py
