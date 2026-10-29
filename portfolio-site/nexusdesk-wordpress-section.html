@@ -1,0 +1,52 @@
+<!-- NexusDesk v1.0 — add as a NEW project in your existing portfolio.
+     Uses scoped CSS; does not modify SecureScan or other project cards. -->
+<style>
+.nd-portfolio-case{--nd-green:#0f766e;--nd-text:#23343d;--nd-border:#dce7e7;font-family:inherit;color:var(--nd-text);background:#f5f7fa;border:1px solid var(--nd-border);border-radius:20px;padding:clamp(20px,4vw,38px);max-width:1120px;margin:24px auto;box-sizing:border-box}
+.nd-portfolio-case *{box-sizing:border-box}.nd-portfolio-case .nd-eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:12px;color:var(--nd-green);font-weight:800}
+.nd-portfolio-case h2{font-size:clamp(27px,3.6vw,42px);line-height:1.2;color:#172d36;margin:9px 0 13px}.nd-portfolio-case h3{font-size:20px;color:#20323a;margin:5px 0 12px}
+.nd-portfolio-case p{color:#516371;line-height:1.75;font-size:15px}
+.nd-portfolio-case .nd-actions{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}
+.nd-portfolio-case .nd-action{padding:12px 18px;border-radius:10px;background:var(--nd-green);color:white!important;text-decoration:none!important;font-weight:750;border:1px solid var(--nd-green)}
+.nd-portfolio-case .nd-action.secondary{color:var(--nd-green)!important;background:white}
+.nd-portfolio-case .nd-action:focus-visible{outline:3px solid #a46028;outline-offset:3px}
+.nd-portfolio-case .nd-tags{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 24px}
+.nd-portfolio-case .nd-tags span{background:#e5f3ef;color:#18594f;padding:6px 11px;border-radius:99px;font-size:12px;font-weight:700}
+.nd-portfolio-case .nd-preview{border-radius:15px;background:white;border:1px solid #d7e6e2;padding:22px;box-shadow:0 10px 24px rgba(15,118,110,.06);margin:27px 0}
+.nd-portfolio-case .nd-preview-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.nd-portfolio-case .nd-logo{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:#0f766e;color:white;font-weight:900}
+.nd-portfolio-case .nd-brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.nd-portfolio-case .nd-demo{border-radius:50px;background:#e4f4eb;color:#187b51;padding:5px 10px;font-size:11px;font-weight:700}
+.nd-portfolio-case .nd-preview-title{font-weight:800;color:#1d3137;margin:20px 0 13px;font-size:18px}
+.nd-portfolio-case .nd-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.nd-portfolio-case .nd-kpis div{background:#f5f8f9;border:1px solid #e0e8ea;padding:16px;border-radius:11px}
+.nd-portfolio-case .nd-kpis small{display:block;color:#627984;font-size:11px}.nd-portfolio-case .nd-kpis strong{display:block;color:#1f333c;font-size:27px;margin:5px 0}
+.nd-portfolio-case .nd-note{font-size:11px;color:#6d8487;margin:12px 0 0}
+.nd-portfolio-case .nd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:25px}
+.nd-portfolio-case .nd-panel{background:white;border:1px solid #dce7e7;border-radius:12px;padding:19px}
+.nd-portfolio-case .nd-panel p{margin:0;font-size:14px}
+.nd-portfolio-case .nd-limit{margin-top:23px;padding:15px 17px;background:#e7f3ee;border:1px solid #c7e1d8;border-radius:10px;font-size:13px}
+@media(max-width:640px){.nd-portfolio-case .nd-grid{grid-template-columns:1fr}.nd-portfolio-case .nd-kpis{grid-template-columns:1fr}.nd-portfolio-case .nd-action{flex:1;text-align:center}}
+</style>
+<section class="nd-portfolio-case" aria-labelledby="nd-portfolio-title">
+  <div class="nd-eyebrow">Featured project · Full-stack development / IT operations / DevOps</div>
+  <h2 id="nd-portfolio-title">NexusDesk — IT Service Management Platform</h2>
+  <p>A full-stack Django helpdesk for support requests, technician workflows, equipment inventory and service-level deadlines. Designed with role-based access, a simplified slate-and-teal dashboard, operational reporting and automated regression tests.</p>
+  <div class="nd-actions">
+    <a class="nd-action" href="https://nexusdesk-demo.onrender.com/demo/" target="_blank" rel="noopener noreferrer">Explore the live demo ↗</a>
+    <a class="nd-action secondary" href="https://github.com/eddy235/NexusDesk" target="_blank" rel="noopener noreferrer">View GitHub source ↗</a>
+  </div>
+  <div class="nd-tags"><span>Python</span><span>Django</span><span>JavaScript</span><span>HTML/CSS</span><span>SQLite</span><span>PostgreSQL-ready</span><span>GitHub Actions</span><span>Render</span></div>
+  <div class="nd-preview" aria-label="Visual illustration of NexusDesk's synthetic dashboard">
+    <div class="nd-preview-header"><div class="nd-brand"><span class="nd-logo">N</span> NexusDesk</div><span class="nd-demo">Read-only demo</span></div>
+    <div class="nd-preview-title">IT service overview</div>
+    <div class="nd-kpis"><div><small>Open tickets</small><strong>5</strong></div><div><small>In progress</small><strong>5</strong></div><div><small>Demo assets</small><strong>7</strong></div></div>
+    <p class="nd-note">Illustrative figures from fictional sample data, not real employee records.</p>
+  </div>
+  <div class="nd-grid">
+    <div class="nd-panel"><h3>Helpdesk workflows</h3><p>Ticket creation, status tracking, assignments, comments, activity timelines, priorities and search.</p></div>
+    <div class="nd-panel"><h3>Asset management</h3><p>Equipment inventory, assignments, lifecycle states and staff-only update history.</p></div>
+    <div class="nd-panel"><h3>SLA monitoring</h3><p>Business-hour resolution deadlines, overdue indicators and audit-only escalation events.</p></div>
+    <div class="nd-panel"><h3>Reporting &amp; delivery</h3><p>Staff-restricted analytics and CSV exports, automated GitHub tests, configuration checks and a deployed read-only sample.</p></div>
+  </div>
+  <p class="nd-limit"><strong>Public demo boundaries:</strong> the hosted demonstration uses only fictional data. Login, administrator, real ticket and reporting endpoints are blocked. It is not a penetration-tested production ITSM system.</p>
+</section>
