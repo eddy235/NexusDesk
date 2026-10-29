@@ -1,8 +1,12 @@
-# NexusDesk v0.7 — Read-only Render Deployment
+# NexusDesk v1.0 — Read-only Render Deployment
 
 This deployment is for a **synthetic portfolio demonstration only**. It is
 intentionally separate from the authenticated local helpdesk and must not
 receive actual staff accounts, support records or assets.
+
+## Current hosted demonstration
+
+The public synthetic demonstration is available at **https://nexusdesk-demo.onrender.com/demo/**. GitHub-hosted HTTP verification [passed on 29 October 2026](https://github.com/eddy235/NexusDesk/actions/runs/40844351137). The verification checks the deployed v1.0 page, fictional filters, CSS, expected security headers, blocked private routes and rejected POST requests; it does **not** certify the host or app against all vulnerabilities.
 
 ## Create a Render Blueprint
 
@@ -23,7 +27,7 @@ receive actual staff accounts, support records or assets.
 In a terminal with Python installed, use the real URL that Render gives you:
 
 ```bash
-python scripts/verify_demo_http.py https://YOUR-SERVICE.onrender.com
+python scripts/verify_demo_http.py https://nexusdesk-demo.onrender.com
 ```
 
 The script confirms demo mode, the synthetic dashboard, static CSS, security
