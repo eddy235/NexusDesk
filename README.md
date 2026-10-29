@@ -2,6 +2,11 @@
 
 A local-first IT service desk and asset inventory application. Built using **Python, Django, SQLite, HTML/CSS**, with built-in login sessions and CSRF protection. Intended as an evolving full-stack portfolio project, not a publicly hosted multi-tenant SaaS service.
 
+
+## Hosted portfolio demo
+
+**[Open the live NexusDesk v1.0 demo](https://nexusdesk-demo.onrender.com/demo/)** — fictional records only, read-only, no login or operational records. The live deployment passed GitHub-hosted HTTP verification on **29 October 2026**, including synthetic filters, static assets, security headers, blocked private URLs and denied write requests: [live smoke-test run](https://github.com/eddy235/NexusDesk/actions/runs/40844351137). The test is not an independent penetration test.
+
 ## Included in this milestone
 - Authenticated IT dashboard with ticket status totals and overdue counts.
 - Create, list, view and filter support tickets.
@@ -78,7 +83,7 @@ Limitations: single fixed daily weekday working interval; no holiday calendars, 
 
 The application now supports an **isolated, read-only public demonstration** selected by `NEXUSDESK_DEMO_MODE=true`. The demo page at `/demo/` displays hardcoded fictional tickets and inventory. All requests to login, admin, real tickets, real assets, and other internal routes are blocked in demo mode, including POST requests. The root URL redirects to the fictional overview. No demo user accounts or real records are exposed.
 
-A `render.yaml` blueprint configures a Render web service with demo mode enabled and no database. You must connect the repository to Render yourself to deploy it; adding this file does not deploy a service. **Do not enable the internal application as a public service containing real data.**
+A `render.yaml` Blueprint configures the synthetic Render demo with no database; the linked portfolio preview is deployed. The Blueprint file by itself does not deploy a service. **Do not enable the internal application as a public service containing real data.**
 
 For an internal/private installation, `DATABASE_URL` optionally selects PostgreSQL. Local development still uses SQLite unless `DATABASE_URL` is set. Production requires a secret key, explicit host/CSRF values, HTTPS and an independently reviewed deployment. Do not set `DJANGO_DEBUG=true` in demo mode. The public demo is stateless and does not run database migrations.
 
