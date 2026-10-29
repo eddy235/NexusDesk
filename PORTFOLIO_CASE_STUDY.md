@@ -3,7 +3,8 @@
 **Project:** NexusDesk — IT Service Management Platform  
 **Developer:** Eddy Cheruiyot Biegon  
 **Repository:** https://github.com/eddy235/NexusDesk  
-**Live demo:** Add the verified Render URL after deployment (not yet verified).
+**Live demo:** https://nexusdesk-demo.onrender.com/demo/  
+**Hosted check:** 29 October 2026 — [successful live verification](https://github.com/eddy235/NexusDesk/actions/runs/40844351137) (read-only paths, security headers, synthetic filters; not a penetration test)
 
 ## The challenge
 
@@ -69,7 +70,7 @@ Before sharing the URL, verify that it shows only synthetic data; that
 login/admin/private ticket URLs return 404. Run the checked-in helper:
 
 ```bash
-python scripts/verify_demo_http.py https://YOUR-VERIFIED-SERVICE.onrender.com
+python scripts/verify_demo_http.py https://nexusdesk-demo.onrender.com
 ```
 
 Never use screenshots of real staff tickets or serial numbers for the portfolio.
